@@ -1,0 +1,13 @@
+{
+    "name": "melody",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "concurrently \"npm run server\" \"npm run client\"",
+        "server": "cd server && nodemon",
+        "client": "cd client && npm start",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.1"
+    }
+}
