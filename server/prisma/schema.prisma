@@ -11,11 +11,25 @@ datasource db {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
+  name         String
   username     String
-  email        String   @unique
+  email        String       @unique
   password     String
-  registeredAt DateTime @default(now())
+  registeredAt DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  Soundtrack   Soundtrack[]
 
   @@map("users")
+}
+
+model Soundtrack {
+  id            Int      @id @default(autoincrement())
+  title         String
+  datePublished DateTime
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+
+  @@map("soundtracks")
 }
