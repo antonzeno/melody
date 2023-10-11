@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import './Register.css'
+import { Link } from 'react-router-dom';
 
 const Register = () => {
+    const [submitting, setSubmitting] = useState(false);
+
     const initialValues = {
         username: '',
         email: '',
@@ -10,15 +14,20 @@ const Register = () => {
     };
 
     const validationSchema = Yup.object({
-        username: Yup.string().required('Required'),
-        email: Yup.string().email('Invalid email address').required('Required'),
-        password: Yup.string().required('Required'),
+        username: Yup.string().required('Username cannot be empty.'),
+        email: Yup.string().email('Invalid email address').required('Email cannot be empty.'),
+        password: Yup.string().required('Password cannot be empty').min(8, 'Password must be at least 8 characters'),
+        password2: Yup.string()
+            .when('password', (password, schema) => {
+                if (password) return schema.required('Confirm Password is required');
+            })
+            .oneOf([Yup.ref('password')], 'Passwords must match')
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
+    const onSubmit = (values) => {
         setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
+            setSubmitting(true);
         }, 400);
     };
 
@@ -41,24 +50,35 @@ const Register = () => {
             >
                 <Form>
                     <div className='input-group'>
-                        <label htmlFor="username">Username</label>
-                        <Field type="text" id="username" name="username" />
-                        <ErrorMessage name="username" component="div" />
+                        <label className='input-label' htmlFor="username">Username</label>
+                        <Field className="form-input" type="text" id="username" name="username" />
+                        <ErrorMessage className='input-error' name="username" component="div" />
                     </div>
 
                     <div className='input-group'>
-                        <label htmlFor="email">Email</label>
-                        <Field type="text" id="email" name="email" />
-                        <ErrorMessage name="email" component="div" />
+                        <label className='input-label' htmlFor="email">Email</label>
+                        <Field className="form-input" type="text" id="email" name="email" />
+                        <ErrorMessage className='input-error' name="email" component="div" />
                     </div>
 
                     <div className='input-group'>
-                        <label htmlFor="password">Password</label>
-                        <Field type="password" id="password" name="password" />
-                        <ErrorMessage name="password" component="div" />
+                        <label className='input-label' htmlFor="password">Password</label>
+                        <Field className="form-input" type="password" id="password" name="password" />
+                        <ErrorMessage className='input-error' name="password" component="div" />
                     </div>
 
-                    <button type="submit">Submit</button>
+                    <div className='input-group'>
+                        <label className='input-label' htmlFor="password2">Repeat password</label>
+                        <Field className="form-input" type="password" id="password2" name="password2" />
+                        <ErrorMessage className='input-error' name="password2" component="div" />
+                    </div>
+
+                    <div className='form-button'>
+                        <button className='btn btn-primary' type="submit" disabled={submitting}>{submitting ? 'Please wait' : 'Register'}</button>
+                    </div>
+                    <div className="form-login mt-2">
+                        <p>Already have an account? <Link to="/login">Login</Link></p>
+                    </div>
                 </Form>
             </Formik>
         </div>

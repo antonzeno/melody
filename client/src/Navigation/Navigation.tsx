@@ -1,5 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { FaShoppingCart } from 'react-icons/fa';
 
 const Navigation = () => {
     return (
@@ -15,15 +17,15 @@ const Navigation = () => {
                     /> <div>Melody</div>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav" className='mt-1'>
+                <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="/albums">Albums</Nav.Link>
+                        <Link to="/" className='text-decoration-none text-white mx-2'>Home</Link>
+                        <Link to="/albums" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
-                    <Nav className='d-flex align-items-center'>
-                        <Button className='rounded-circle' variant='dark'>C</Button>
-                        <Nav.Link href="/register"><Button variant='info' className='rounded-pill' >Register</Button></Nav.Link>
-                        <Nav.Link href="/login"><Button variant='dark' className='rounded-pill' >Login</Button></Nav.Link>
+                    <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
+                        <Link to="/cart"><Button className='rounded-circle' variant='dark'><FaShoppingCart /></Button></Link>
+                        <Link to="/register"><Button variant='info' className='rounded-pill mx-2' >Register</Button></Link>
+                        <Link to="/login"><Button variant='dark' className='rounded-pill' >Login</Button></Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

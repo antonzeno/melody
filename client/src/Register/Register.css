@@ -1,0 +1,41 @@
+.auth-form {
+    min-width: 400px;
+    max-width: 500px;
+    border-radius: 8px;
+    margin: auto;
+    background-color: rgb(28, 28, 28);
+    padding: 20px;
+    align-self: center;
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        margin: 20px 0;
+    }
+
+    .input-label {
+        margin-bottom: 8px;
+    }
+
+
+    .form-input {
+        padding: 12px;
+        border-radius: 8px !important;
+        background: #222222;
+        border: none;
+        color: #ffffff;
+    }
+
+    .input-error {
+        color: #3191D1;
+    }
+
+    .form-button {
+        display: flex;
+        justify-content: center;
+
+        .btn {
+            width: 50%;
+        }
+    }
+}
