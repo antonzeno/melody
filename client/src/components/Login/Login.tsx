@@ -3,9 +3,12 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../../atoms/auth';
 
 const Login = () => {
     const [submitting, setSubmitting] = useState(false);
+    const setUser = useSetRecoilState(userState);
 
     const initialValues = {
         email: '',
@@ -22,7 +25,8 @@ const Login = () => {
         try {
             const response = await axios.post(process.env.REACT_APP_SERVER_URL + '/user/login', values)
 
-            if (response.status == 200) {
+            if (response.status === 200) {
+                setUser(response.data.user);
                 resetForm()
             } else {
                 console.error(response.data)

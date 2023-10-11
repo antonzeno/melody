@@ -31,7 +31,7 @@ const Register = () => {
         try {
             const response = await axios.post(process.env.REACT_APP_SERVER_URL + '/user/register', values)
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 resetForm()
             } else {
                 console.error(response.data)

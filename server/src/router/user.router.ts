@@ -53,10 +53,37 @@ export default (router: express.Router) => {
                 email: user.email
             }, 'secretKey', { expiresIn: '1h' });
 
-            return response.status(200).json({ token, user });
+            response.cookie('jwt', token, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 3600000,
+            });
+
+            return response.status(200).json({ user });
         } catch (error) {
             return response.status(500).json({ error: 'Internal Server Error' });
         }
 
     })
+
+    router.get('/user/checkAuth', (request: express.Request, response: express.Response) => {
+        try {
+            const token = request.cookies.jwt;
+            if (!token) {
+                return response.status(401).json('Unauthorized');
+            }
+
+            jwt.verify(token, 'secretKey', (err: any, decodedToken: any) => {
+                if (err) {
+                    return response.status(401).json('Unauthorized');
+                }
+
+                return response.status(200).json({ user: decodedToken });
+            });
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
 }

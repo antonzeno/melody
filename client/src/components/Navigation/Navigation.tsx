@@ -2,8 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { FaShoppingCart } from 'react-icons/fa';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../atoms/auth';
 
 const Navigation = () => {
+    const user = useRecoilValue(userState);
+
     return (
         <Navbar variant='dark' expand="lg">
             <Container>
@@ -22,11 +26,13 @@ const Navigation = () => {
                         <Link to="/" className='text-decoration-none text-white mx-2'>Home</Link>
                         <Link to="/albums" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
-                    <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
+
+                    {user ? user.email : <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
                         <Link to="/cart"><Button className='rounded-circle' variant='dark'><FaShoppingCart /></Button></Link>
                         <Link to="/register"><Button variant='info' className='rounded-pill mx-2' >Register</Button></Link>
                         <Link to="/login"><Button variant='dark' className='rounded-pill' >Login</Button></Link>
-                    </Nav>
+                    </Nav>}
+
                 </Navbar.Collapse>
             </Container>
         </Navbar>
