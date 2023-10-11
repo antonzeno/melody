@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
     const [submitting, setSubmitting] = useState(false);
@@ -16,9 +17,22 @@ const Login = () => {
         password: Yup.string().required('Please enter your password'),
     });
 
-    const onSubmit = (values, { setSubmitting }) => {
-        alert(JSON.stringify(values, null, 2));
-        setSubmitting(true);
+    const handleSubmit = async (values, { resetForm }) => {
+        setSubmitting(true)
+        try {
+            const response = await axios.post(process.env.REACT_APP_SERVER_URL + '/user/login', values)
+
+            if (response.status == 200) {
+                resetForm()
+            } else {
+                console.error(response.data)
+            }
+
+        } catch (error) {
+            console.error(error) //Todo: Handle console errors with snackbars
+        }
+
+        setSubmitting(false)
     };
 
     return (
@@ -36,7 +50,7 @@ const Login = () => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={onSubmit}
+                onSubmit={handleSubmit}
             >
                 <Form>
                     <div className='input-group'>

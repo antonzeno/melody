@@ -16,6 +16,7 @@ export default (router: express.Router) => {
 
     router.post('/user/register', async (request: express.Request, response: express.Response) => {
         try {
+            console.log(request.body)
             const existingUser = await UserService.getUserByEmail(request.body.email)
             if (existingUser) {
                 return response.status(403).json('User already exists')

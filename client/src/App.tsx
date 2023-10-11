@@ -1,11 +1,11 @@
 import React from 'react'
-import Navigation from './Navigation/Navigation'
+import Navigation from './components/Navigation/Navigation'
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
-import Home from './Home/Home'
-import Footer from './Footer/Footer'
-import Login from './Login/Login'
-import Register from './Register/Register'
+import Home from './components/Home/Home'
+import Footer from './components/Footer/Footer'
+import Login from './components/Login/Login'
+import Register from './components/Register/Register'
 
 function App() {
   return (

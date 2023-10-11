@@ -3,18 +3,20 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import './Register.css'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
     const [submitting, setSubmitting] = useState(false);
 
     const initialValues = {
-        username: '',
+        name: '',
         email: '',
         password: '',
+        password2: ''
     };
 
     const validationSchema = Yup.object({
-        username: Yup.string().required('Username cannot be empty.'),
+        name: Yup.string().required('Name cannot be empty.'),
         email: Yup.string().email('Invalid email address').required('Email cannot be empty.'),
         password: Yup.string().required('Password cannot be empty').min(8, 'Password must be at least 8 characters'),
         password2: Yup.string()
@@ -24,9 +26,22 @@ const Register = () => {
             .oneOf([Yup.ref('password')], 'Passwords must match')
     });
 
-    const handleSubmit = async (values) => {
-        setSubmitting(true);
+    const handleSubmit = async (values, { resetForm }) => {
+        setSubmitting(true)
+        try {
+            const response = await axios.post(process.env.REACT_APP_SERVER_URL + '/user/register', values)
 
+            if (response.status == 200) {
+                resetForm()
+            } else {
+                console.error(response.data)
+            }
+
+        } catch (error) {
+            console.error(error) //Todo: Handle console errors with snackbars
+        }
+
+        setSubmitting(false)
     };
 
     return (
@@ -48,9 +63,9 @@ const Register = () => {
             >
                 <Form>
                     <div className='input-group'>
-                        <label className='input-label' htmlFor="username">Username</label>
-                        <Field className="form-input" type="text" id="username" name="username" />
-                        <ErrorMessage className='input-error' name="username" component="div" />
+                        <label className='input-label' htmlFor="name">Name</label>
+                        <Field className="form-input" type="text" id="name" name="name" />
+                        <ErrorMessage className='input-error' name="name" component="div" />
                     </div>
 
                     <div className='input-group'>
