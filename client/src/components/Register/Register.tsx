@@ -24,11 +24,9 @@ const Register = () => {
             .oneOf([Yup.ref('password')], 'Passwords must match')
     });
 
-    const onSubmit = (values) => {
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(true);
-        }, 400);
+    const handleSubmit = async (values) => {
+        setSubmitting(true);
+
     };
 
     return (
@@ -46,7 +44,7 @@ const Register = () => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={onSubmit}
+                onSubmit={handleSubmit}
             >
                 <Form>
                     <div className='input-group'>
