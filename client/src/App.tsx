@@ -17,7 +17,8 @@ function App() {
   const setUser = useSetRecoilState(userState);
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
+
+    (async () => {
       try {
         axios.interceptors.request.use(
           (config) => {
@@ -38,9 +39,8 @@ function App() {
       } catch (error) {
         setIsLoggedIn(false);
       }
-    };
+    })();
 
-    checkLoggedIn();
   }, []);
 
 

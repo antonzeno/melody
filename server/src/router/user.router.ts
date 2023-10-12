@@ -86,4 +86,14 @@ export default (router: express.Router) => {
         }
     });
 
+    router.get('/user/logout', (request: express.Request, response: express.Response) => {
+        try {
+            response.cookie('jwt', null, { expires: new Date(0) });
+
+            return response.status(200).json('Success');
+        } catch (error) {
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
 }
