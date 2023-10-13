@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import crypto from 'crypto';
+require('dotenv').config();
 
 export const generateSaltedHash = async (password: string): Promise<string> => {
     const saltRounds = 10;
@@ -17,4 +19,13 @@ export const verifyPassword = async (password: string, storedHash: string): Prom
             }
         });
     });
+}
+
+export const encrypt = (text: string) => {
+    let iv = crypto.randomBytes(parseInt(process.env.CRYPTO_ENCRYPT_LENGTH));
+    let cipher = crypto.createCipheriv(process.env.CRYPTO_ALGORITHM, Buffer.from(process.env.CRYPTO_ENCRYPTION_KEY, 'hex'), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 }

@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { FaShoppingCart } from 'react-icons/fa';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../atoms/auth';
+import { authState, userState } from '../../atoms/auth';
 import axios from 'axios';
+import { deleteCookie } from '../../utils/utils';
 
 const Navigation = () => {
     const [user, setUser] = useRecoilState(userState);
+    const [auth, setAuth] = useRecoilState(authState);
 
 
     const handleLogout = async () => {
@@ -25,7 +27,9 @@ const Navigation = () => {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/logout`);
 
             if (response.status === 200) {
-                setUser(null)
+                setUser(null);
+                setAuth(null);
+                deleteCookie('sessionId');
             }
         } catch (error) {
             console.error(error)
@@ -52,7 +56,7 @@ const Navigation = () => {
                         <Link to="/albums" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
 
-                    {user ? <Button onClick={() => handleLogout()} >Logout</Button> : <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
+                    {auth ? <Button onClick={() => handleLogout()} >Logout</Button> : <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
                         <Link to="/cart"><Button className='rounded-circle' variant='dark'><FaShoppingCart /></Button></Link>
                         <Link to="/register"><Button variant='info' className='rounded-pill mx-2' >Register</Button></Link>
                         <Link to="/login"><Button variant='dark' className='rounded-pill' >Login</Button></Link>

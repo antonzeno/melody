@@ -1,48 +1,52 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Route, Routes } from 'react-router-dom'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import './App.css'
 import Home from './components/Home/Home'
 import Footer from './components/Footer/Footer'
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
-import { userState } from './atoms/auth'
+import { authState, userState } from './atoms/auth'
 import Navigation from './components/Navigation/Navigation'
+import { decryptCookie, deleteCookie, encryptCookie } from './utils/utils'
+import GuardedRoute from './components/GuardedRoute/GuardedRoute'
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [auth, setAuth] = useRecoilState(authState);
   const setUser = useSetRecoilState(userState);
 
   useEffect(() => {
+    if (!decryptCookie('sessionId')) {
+      (async () => {
+        try {
+          axios.interceptors.request.use(
+            (config) => {
+              config.withCredentials = true;
+              return config;
+            },
+            (error) => {
+              return Promise.reject(error);
+            }
+          );
 
-    (async () => {
-      try {
-        axios.interceptors.request.use(
-          (config) => {
-            config.withCredentials = true;
-            return config;
-          },
-          (error) => {
-            return Promise.reject(error);
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
+
+          if (response.status === 200) {
+            setAuth(true);
+            setUser(response.data.user);
+            encryptCookie('sessionId', response.data.user)
           }
-        );
-
-        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
-
-        if (response.status === 200) {
-          setIsLoggedIn(true);
-          setUser(response.data.user);
+        } catch (error) {
+          deleteCookie('sessionId');
         }
-      } catch (error) {
-        setIsLoggedIn(false);
-      }
-    })();
-
+      })();
+    } else {
+      setUser(decryptCookie('sessionId'))
+    }
   }, []);
-
 
   return (
     <div className='wrapper'>
@@ -50,8 +54,8 @@ function App() {
       <div className="content">
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<GuardedRoute element={Login} />} />
+          <Route path='/register' element={<GuardedRoute element={Register} />} />
         </Routes>
       </div>
       <Footer />

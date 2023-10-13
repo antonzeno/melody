@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
-import { userState } from '../../atoms/auth';
+import { authState, userState } from '../../atoms/auth';
+import { encryptCookie } from '../../utils/utils';
 
 const Login = () => {
     const [submitting, setSubmitting] = useState(false);
     const setUser = useSetRecoilState(userState);
+    const setAuth = useSetRecoilState(authState);
+    const navigate = useNavigate();
 
     const initialValues = {
         email: '',
@@ -26,8 +29,10 @@ const Login = () => {
             const response = await axios.post(process.env.REACT_APP_SERVER_URL + '/user/login', values)
 
             if (response.status === 200) {
+                encryptCookie('sessionId', response.data.user)
                 setUser(response.data.user);
-                resetForm()
+                setAuth(true);
+                navigate('/')
             } else {
                 console.error(response.data)
             }
