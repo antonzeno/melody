@@ -11,7 +11,7 @@ import Register from './components/Register/Register'
 import { authState, userState } from './atoms/auth'
 import Navigation from './components/Navigation/Navigation'
 import { decryptCookie, deleteCookie, encryptCookie } from './utils/utils'
-import GuardedRoute from './components/GuardedRoute/GuardedRoute'
+import GuardedRoute from './components/CustomRoutes/GuardedRoute'
 
 function App() {
 
