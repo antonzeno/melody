@@ -11,6 +11,7 @@ export const listUsers = async (): Promise<User[]> => {
             password: true,
             registeredAt: true,
             updatedAt: true,
+            photo: true,
         }
     })
 }
@@ -32,6 +33,7 @@ export const register = async (userData: { name: string, email: string, password
             password: true,
             registeredAt: true,
             updatedAt: true,
+            photo: true,
         }
     })
 }
@@ -47,5 +49,18 @@ export const getUserByEmail = async (email: string): Promise<User> => {
         where: {
             email: email,
         }
+    })
+}
+
+export const updateUser = async (userData: { id: number, name: string, email: string, password?: string, photo: string }): Promise<User> => {
+    return prisma.user.update({
+        where: {
+            id: userData.id,
+        },
+        data: {
+            name: userData.name,
+            email: userData.email,
+            photo: userData.photo,
+        },
     })
 }

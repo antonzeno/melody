@@ -17,6 +17,7 @@ model User {
   password     String
   registeredAt DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  photo        String       @default("")
   Soundtrack   Soundtrack[]
 
   @@map("users")

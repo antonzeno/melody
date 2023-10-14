@@ -3,33 +3,30 @@ import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../atoms/auth';
 import ImageUploading from 'react-images-uploading';
+import { uploadToS3 } from '../../services/s3Service';
+import { encryptCookie } from '../../utils/utils';
 
 const EditProfile = () => {
     const [submitting, setSubmitting] = useState(false);
     const [user, setUser] = useRecoilState(userState);
-    const [images, setImages] = React.useState([]);
+    const [images, setImages] = useState([]);
     const maxNumber = 1;
 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        photo: '',
     });
 
-    const handleImageChange = (imageList, addUpdateIndex) => {
-        // data for submit
-        console.log(imageList, addUpdateIndex);
+    const handleImageChange = (imageList) => {
         setImages(imageList);
     };
 
-
     useEffect(() => {
         setFormData({
-            name: user.name,
-            email: user.email,
-            photo: user.photo,
+            name: user.name ?? '',
+            email: user.email ?? '',
         });
-    }, []);
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,8 +36,43 @@ const EditProfile = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        try {
+            axios.interceptors.request.use(
+                (config) => {
+                    config.withCredentials = true;
+                    return config;
+                },
+                (error) => {
+                    return Promise.reject(error);
+                }
+            );
+
+            let imageUrl = images.length > 0 ? await uploadToS3(images[0].file, 'melody-profilephotos', `photos/${user.id}`) : user.photo;
+
+            const apiResponse = await axios.put(`${process.env.REACT_APP_SERVER_URL}/user/update`, {
+                userData: {
+                    id: user.id,
+                    name: formData.name,
+                    email: formData.email,
+                    photo: imageUrl,
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (apiResponse.status === 200) {
+                setUser(apiResponse.data);
+                encryptCookie('sessionId', apiResponse.data)
+            } else {
+                console.error('Error updating user:', apiResponse.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
 
     };
 

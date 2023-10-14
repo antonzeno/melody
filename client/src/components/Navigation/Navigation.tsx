@@ -75,7 +75,6 @@ const Navigation = () => {
                         <Link to="/" className='text-decoration-none text-white mx-2'>Home</Link>
                         <Link to="/albums" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
-
                     {auth ? <NavDropdown
                         title={
                             <span onClick={handleDropdownToggle} >
@@ -87,7 +86,7 @@ const Navigation = () => {
                         className='me-5'
                         ref={dropdownRef}
                     >
-                        <NavDropdown.Item>Upload</NavDropdown.Item>
+                        <NavDropdown.Item><Link to="/profile/edit">Edit profile</Link></NavDropdown.Item>
                         <NavDropdown.Item><span onClick={() => handleLogout()}>Logout</span></NavDropdown.Item>
                     </NavDropdown> : <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
                         <Link to="/cart"><Button className='rounded-circle' variant='dark'><FaShoppingCart /></Button></Link>

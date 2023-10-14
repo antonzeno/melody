@@ -50,7 +50,8 @@ export default (router: express.Router) => {
             const token = jwt.sign({
                 userId: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                photo: user.photo,
             }, 'secretKey', { expiresIn: '1h' });
 
             response.cookie('jwt', token, {
@@ -82,4 +83,14 @@ export default (router: express.Router) => {
         }
     });
 
+    router.put('/user/update', checkAuth, async (request: express.Request, response: express.Response) => {
+        try {
+            const { userData } = request.body;
+
+            const user = await UserService.updateUser(userData)
+            return response.status(200).json(user);
+        } catch (error) {
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 }
