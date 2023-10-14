@@ -8,12 +8,12 @@ const GuardedRoute = ({ element: Element, ...rest }) => {
     const auth = useRecoilValue(authState);
 
     useEffect(() => {
-        auth == true && navigate(-1);
+        auth === true && navigate(-1);
     })
 
 
 
-    return auth == true ? <></> : <Element {...rest} />;
+    return auth === true ? <></> : <Element {...rest} />;
 };
 
 export default GuardedRoute;
