@@ -12,6 +12,8 @@ import { authState, userState } from './atoms/auth'
 import Navigation from './components/Navigation/Navigation'
 import { decryptCookie, deleteCookie, encryptCookie } from './utils/utils'
 import GuardedRoute from './components/CustomRoutes/GuardedRoute'
+import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
+import EditProfile from './pages/EditProfile/EditProfile'
 
 function App() {
 
@@ -54,6 +56,7 @@ function App() {
       <div className="content">
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/profile/edit' element={<AuthGuardedRoute element={EditProfile} />} />
           <Route path='/login' element={<GuardedRoute element={Login} />} />
           <Route path='/register' element={<GuardedRoute element={Register} />} />
         </Routes>

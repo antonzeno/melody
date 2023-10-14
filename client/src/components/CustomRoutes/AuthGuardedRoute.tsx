@@ -8,7 +8,7 @@ const AuthGuardedRoute = ({ element: Element, ...rest }) => {
     const auth = useRecoilValue(authState);
 
     useEffect(() => {
-        auth !== true && navigate(-1);
+        auth !== true && navigate('/login');
     })
 
 
