@@ -1,9 +1,7 @@
 import express from 'express';
 import * as UserService from '../services/user.service'
 import jwt from 'jsonwebtoken'
-import { encrypt } from '../utils/utils';
-import { Json } from 'sequelize/lib/utils';
-
+import { checkAuth } from '../middlewares/auth.middleware'
 
 export default (router: express.Router) => {
     router.get('/users', async (request: express.Request, response: express.Response) => {
@@ -68,23 +66,8 @@ export default (router: express.Router) => {
 
     })
 
-    router.get('/user/checkAuth', (request: express.Request, response: express.Response) => {
-        try {
-            const token = request.cookies.jwt;
-            if (!token) {
-                return response.sendStatus(401);
-            }
-
-            jwt.verify(token, 'secretKey', (err: any, decodedToken: any) => {
-                if (err) {
-                    return response.status(401).json('Unauthorized');
-                }
-
-                return response.status(200).json({ user: decodedToken });
-            });
-        } catch (error) {
-            return response.status(500).json({ error: 'Internal Server Error' });
-        }
+    router.get('/user/checkAuth', checkAuth, (request: express.Request, response: express.Response) => {
+        return response.status(200).json({ user: request.user });
     });
 
     router.get('/user/logout', (request: express.Request, response: express.Response) => {
