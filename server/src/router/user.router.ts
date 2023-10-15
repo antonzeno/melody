@@ -93,4 +93,15 @@ export default (router: express.Router) => {
             return response.status(500).json({ error: 'Internal Server Error' });
         }
     });
+
+    router.get('/user/:id', async (request: express.Request, response: express.Response) => {
+        try {
+            const { id } = request.params;
+
+            const user = await UserService.getUserById(parseInt(id))
+            return response.status(200).json(user);
+        } catch (error) {
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    })
 }

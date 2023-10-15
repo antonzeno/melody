@@ -14,6 +14,8 @@ import { decryptCookie, deleteCookie, encryptCookie } from './utils/utils'
 import GuardedRoute from './components/CustomRoutes/GuardedRoute'
 import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
 import EditProfile from './pages/EditProfile/EditProfile'
+import Artists from './pages/Artists/Artists'
+import Artist from './pages/Artist/Artist'
 
 function App() {
 
@@ -59,6 +61,8 @@ function App() {
           <Route path='/profile/edit' element={<AuthGuardedRoute element={EditProfile} />} />
           <Route path='/login' element={<GuardedRoute element={Login} />} />
           <Route path='/register' element={<GuardedRoute element={Register} />} />
+          <Route path='/artists' element={<Artists />} />
+          <Route path='/artists/:id' element={<Artist />} />
         </Routes>
       </div>
       <Footer />

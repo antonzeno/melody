@@ -1,4 +1,3 @@
-// atoms/auth.js
 import { atom } from 'recoil';
 import Cookies from 'js-cookie';
 import { decryptCookie } from '../utils/utils';

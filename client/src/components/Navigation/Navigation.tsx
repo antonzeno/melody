@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Button, NavDropdown } from 'react-bootstrap';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import { useRecoilState } from 'recoil';
 import { authState, userState } from '../../atoms/auth';
 import axios from 'axios';
@@ -25,7 +25,7 @@ const Navigation = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [user]);
 
 
     const handleLogout = async () => {
@@ -73,12 +73,12 @@ const Navigation = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Link to="/" className='text-decoration-none text-white mx-2'>Home</Link>
-                        <Link to="/albums" className='text-decoration-none text-white mx-2'>Artists</Link>
+                        <Link to="/artists" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
                     {auth ? <NavDropdown
                         title={
                             <span onClick={handleDropdownToggle} >
-                                <Button className='btn btn-dark rounded-circle'>A</Button>
+                                <Button className='btn btn-dark rounded-circle'><FaUser /></Button>
                             </span>
                         }
                         show={dropdownShown}

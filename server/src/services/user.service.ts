@@ -52,6 +52,14 @@ export const getUserByEmail = async (email: string): Promise<User> => {
     })
 }
 
+export const getUserById = async (id: number): Promise<User> => {
+    return prisma.user.findUnique({
+        where: {
+            id: id,
+        }
+    })
+}
+
 export const updateUser = async (userData: { id: number, name: string, email: string, password?: string, photo: string }): Promise<User> => {
     return prisma.user.update({
         where: {
