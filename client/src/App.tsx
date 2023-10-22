@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import './App.css'
 import Home from './pages/Home/Home'
@@ -10,7 +9,7 @@ import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
 import { authState, userState } from './atoms/auth'
 import Navigation from './components/Navigation/Navigation'
-import { decryptCookie, deleteCookie, encryptCookie } from './utils/utils'
+import { decryptCookie, syncUser } from './utils/utils'
 import GuardedRoute from './components/CustomRoutes/GuardedRoute'
 import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
 import EditProfile from './pages/EditProfile/EditProfile'
@@ -19,38 +18,16 @@ import Artist from './pages/Artist/Artist'
 
 function App() {
 
-  const [auth, setAuth] = useRecoilState(authState);
+  const setAuth = useSetRecoilState(authState);
   const setUser = useSetRecoilState(userState);
 
   useEffect(() => {
     if (!decryptCookie('sessionId')) {
-      (async () => {
-        try {
-          axios.interceptors.request.use(
-            (config) => {
-              config.withCredentials = true;
-              return config;
-            },
-            (error) => {
-              return Promise.reject(error);
-            }
-          );
-
-          const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
-
-          if (response.status === 200) {
-            setAuth(true);
-            setUser(response.data.user);
-            encryptCookie('sessionId', response.data.user)
-          }
-        } catch (error) {
-          deleteCookie('sessionId');
-        }
-      })();
+      syncUser(setAuth, setUser);
     } else {
       setUser(decryptCookie('sessionId'))
     }
-  }, []);
+  }, [setAuth, setUser]);
 
   return (
     <div className='wrapper'>

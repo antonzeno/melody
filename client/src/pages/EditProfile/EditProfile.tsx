@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import { userState } from '../../atoms/auth';
 import ImageUploading from 'react-images-uploading';
 import { uploadToS3 } from '../../services/s3Service';
-import { encryptCookie } from '../../utils/utils';
+import { encryptCookie, deleteCookie } from '../../utils/utils';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../atoms/auth';
 
 const EditProfile = () => {
     const [submitting, setSubmitting] = useState(false);
@@ -22,11 +22,35 @@ const EditProfile = () => {
     };
 
     useEffect(() => {
-        setFormData({
-            name: user.name ?? '',
-            email: user.email ?? '',
-        });
-    }, [user]);
+        (async () => {
+            try {
+                axios.interceptors.request.use(
+                    (config) => {
+                        config.withCredentials = true;
+                        return config;
+                    },
+                    (error) => {
+                        return Promise.reject(error);
+                    }
+                );
+
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
+
+                if (response.status === 200) {
+                    const userData = response.data.user;
+                    console.log(userData)
+                    setFormData({
+                        name: userData.name ?? '',
+                        email: userData.email ?? '',
+                    });
+                    setUser(userData);
+                    encryptCookie('sessionId', userData)
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        })();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,6 +59,10 @@ const EditProfile = () => {
             [name]: value,
         });
     };
+
+    const removeImage = () => {
+        setUser({ ...user, photo: "" })
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -135,6 +163,14 @@ const EditProfile = () => {
                                     Click or Drop here
                                 </button>
                                 &nbsp;
+                                {imageList.length === 0 && user.photo !== "" &&
+                                    <div className="image-item">
+                                        <img src={user.photo} alt="" width="100" />
+                                        <div className="image-item__btn-wrapper mt-2">
+                                            <button className='btn btn-warning ms-2' onClick={() => removeImage()}>Remove</button>
+                                        </div>
+                                    </div>
+                                }
                                 {imageList.map((image, index) => (
                                     <div key={index} className="image-item">
                                         <img src={image['data_url']} alt="" width="100" />

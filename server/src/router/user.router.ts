@@ -48,7 +48,7 @@ export default (router: express.Router) => {
             }
 
             const token = jwt.sign({
-                userId: user.id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 photo: user.photo,
@@ -67,8 +67,9 @@ export default (router: express.Router) => {
 
     })
 
-    router.get('/user/checkAuth', checkAuth, (request: express.Request, response: express.Response) => {
-        return response.status(200).json({ user: request.user });
+    router.get('/user/checkAuth', checkAuth, async (request: express.Request, response: express.Response) => {
+        const userData = await UserService.getUserById(request.user.id)
+        return response.status(200).json({ user: userData });
     });
 
     router.get('/user/logout', (request: express.Request, response: express.Response) => {

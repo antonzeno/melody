@@ -75,24 +75,57 @@ const Navigation = () => {
                         <Link to="/" className='text-decoration-none text-white mx-2'>Home</Link>
                         <Link to="/artists" className='text-decoration-none text-white mx-2'>Artists</Link>
                     </Nav>
-                    {auth ? <NavDropdown
-                        title={
-                            <span onClick={handleDropdownToggle} >
-                                <Button className='btn btn-dark rounded-circle'><FaUser /></Button>
-                            </span>
-                        }
-                        show={dropdownShown}
-                        drop={'down-centered'}
-                        className='me-5'
-                        ref={dropdownRef}
-                    >
-                        <NavDropdown.Item><Link to="/profile/edit">Edit profile</Link></NavDropdown.Item>
-                        <NavDropdown.Item><span onClick={() => handleLogout()}>Logout</span></NavDropdown.Item>
-                    </NavDropdown> : <Nav className='d-flex flex-row align-items-center justify-content-betweeen'>
-                        <Link to="/cart"><Button className='rounded-circle' variant='dark'><FaShoppingCart /></Button></Link>
-                        <Link to="/register"><Button variant='info' className='rounded-pill mx-2' >Register</Button></Link>
-                        <Link to="/login"><Button variant='dark' className='rounded-pill' >Login</Button></Link>
-                    </Nav>}
+                    {auth ? (
+                        <NavDropdown
+                            title={
+                                <span onClick={handleDropdownToggle}>
+                                    {user.photo !== "" ? (
+                                        <img
+                                            className='rounded-circle'
+                                            src={user.photo}
+                                            alt="Profile"
+                                            width={20}
+                                            height={20}
+                                        />
+                                    ) : (
+                                        <FaUser />
+                                    )}
+                                </span>
+                            }
+                            show={dropdownShown}
+                            drop={'down-centered'}
+                            className='me-5'
+                            ref={dropdownRef}
+                        >
+                            <NavDropdown.Item>
+                                <Link className='text-decoration-none text-white' to="/profile/edit">
+                                    Edit profile
+                                </Link>
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
+                                <span onClick={() => handleLogout()}>Logout</span>
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                    ) : (
+                        <Nav className='d-flex flex-row align-items-center justify-content-between'>
+                            <Link to="/cart">
+                                <Button className='rounded-circle' variant='dark'>
+                                    <FaShoppingCart />
+                                </Button>
+                            </Link>
+                            <Link to="/register">
+                                <Button variant='info' className='rounded-pill mx-2'>
+                                    Register
+                                </Button>
+                            </Link>
+                            <Link to="/login">
+                                <Button variant='dark' className='rounded-pill'>
+                                    Login
+                                </Button>
+                            </Link>
+                        </Nav>
+                    )}
+
 
                 </Navbar.Collapse>
             </Container>
