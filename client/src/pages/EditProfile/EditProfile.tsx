@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ImageUploading from 'react-images-uploading';
 import { uploadToS3 } from '../../services/s3Service';
-import { encryptCookie, deleteCookie } from '../../utils/utils';
+import { encryptCookie } from '../../utils/utils';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../atoms/auth';
 
@@ -105,7 +105,7 @@ const EditProfile = () => {
     };
 
     return (
-        <div className="auth-form">
+        <div className="app-form">
             <div className='d-flex flex-column justify-content-center align-items-center'>
                 <img
                     src="/logo.png"
@@ -189,7 +189,6 @@ const EditProfile = () => {
                 </div>
             </form>
         </div>
-
     );
 }
 

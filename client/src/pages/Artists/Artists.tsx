@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import ArtistCard from '../../components/ArtistCard/ArtistCard';
 
 const Artists = () => {
 
@@ -19,18 +20,20 @@ const Artists = () => {
             }
         })();
 
-    }, [users])
+    }, [])
 
     return (
         <div className="container">
-            {error ?? users.map(user =>
-                <div key={user.id}>
-                    <Link to={`/artists/${user.id}`}>
-                        {user.name}
-                    </Link>
-                </div>
+            <div className="row">
+                {error ?? users.map(user =>
+                    <div key={user.id} className='col-12 col-md-3'>
+                        <Link to={`/artists/${user.id}`}>
+                            <ArtistCard artist={user} />
+                        </Link>
+                    </div>
+                )}
+            </div>
 
-            )}
         </div>
     )
 }

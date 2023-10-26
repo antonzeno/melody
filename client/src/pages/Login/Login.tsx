@@ -45,7 +45,7 @@ const Login = () => {
     };
 
     return (
-        <div className="auth-form">
+        <div className="app-form">
             <div className='d-flex flex-column justify-content-center align-items-center'>
                 <img
                     src="/logo.png"

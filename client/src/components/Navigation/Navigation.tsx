@@ -103,6 +103,11 @@ const Navigation = () => {
                                 </Link>
                             </NavDropdown.Item>
                             <NavDropdown.Item>
+                                <Link className='text-decoration-none text-white' to="/soundtrack/edit">
+                                    Upload soundtrack
+                                </Link>
+                            </NavDropdown.Item>
+                            <NavDropdown.Item>
                                 <span onClick={() => handleLogout()}>Logout</span>
                             </NavDropdown.Item>
                         </NavDropdown>
@@ -125,8 +130,6 @@ const Navigation = () => {
                             </Link>
                         </Nav>
                     )}
-
-
                 </Navbar.Collapse>
             </Container>
         </Navbar>

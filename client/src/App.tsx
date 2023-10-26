@@ -15,6 +15,7 @@ import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
 import EditProfile from './pages/EditProfile/EditProfile'
 import Artists from './pages/Artists/Artists'
 import Artist from './pages/Artist/Artist'
+import EditSoundtrack from './pages/EditSoundtrack/EditSoundtrack'
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
           <Route path='/register' element={<GuardedRoute element={Register} />} />
           <Route path='/artists' element={<Artists />} />
           <Route path='/artists/:id' element={<Artist />} />
+          <Route path='/soundtrack/edit/:id?' element={<AuthGuardedRoute element={EditSoundtrack} />} />
         </Routes>
       </div>
       <Footer />
