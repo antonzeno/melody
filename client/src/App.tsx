@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { useSetRecoilState } from 'recoil'
 
 import './App.css'
 import Home from './pages/Home/Home'
@@ -19,14 +18,10 @@ import { useAuthentication } from './hooks/useAuthentication'
 
 function App() {
 
-  const { syncUser, setUser } = useAuthentication();
+  const { syncUser } = useAuthentication();
 
   useEffect(() => {
-    if (!decryptCookie('sessionId')) {
-      syncUser();
-    } else {
-      setUser(decryptCookie('sessionId'))
-    }
+    syncUser()
   }, []);
 
   return (

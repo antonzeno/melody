@@ -33,4 +33,15 @@ export default (router: express.Router) => {
             return response.status(500).json({ error: 'Internal Server Error' });
         }
     })
+
+    router.get('/soundtracks/user/:userId', async (request: express.Request, response: express.Response) => {
+        try {
+            const { userId } = request.params;
+
+            const soundtrack = await SoundtrackService.getSoundtracksByUserId(parseInt(userId));
+            return response.status(200).json(soundtrack);
+        } catch (error) {
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    })
 }

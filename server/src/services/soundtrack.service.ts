@@ -43,3 +43,20 @@ export const getSoundtrackById = async (id: number): Promise<Soundtrack> => {
         }
     })
 }
+
+export const getSoundtracksByUserId = async (userId: number): Promise<Soundtrack[]> => {
+    return prisma.soundtrack.findMany({
+        where: {
+            userId
+        },
+        select: {
+            id: true,
+            title: true,
+            url: true,
+            datePublished: true,
+            updatedAt: true,
+            user: false,
+            userId: true
+        }
+    })
+}
