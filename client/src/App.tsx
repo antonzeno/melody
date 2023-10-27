@@ -7,28 +7,27 @@ import Home from './pages/Home/Home'
 import Footer from './components/Footer/Footer'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
-import { authState, userState } from './atoms/auth'
 import Navigation from './components/Navigation/Navigation'
-import { decryptCookie, syncUser } from './utils/utils'
+import { decryptCookie } from './utils/utils'
 import GuardedRoute from './components/CustomRoutes/GuardedRoute'
 import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
 import EditProfile from './pages/EditProfile/EditProfile'
 import Artists from './pages/Artists/Artists'
 import Artist from './pages/Artist/Artist'
 import EditSoundtrack from './pages/EditSoundtrack/EditSoundtrack'
+import { useAuthentication } from './hooks/useAuthentication'
 
 function App() {
 
-  const setAuth = useSetRecoilState(authState);
-  const setUser = useSetRecoilState(userState);
+  const { syncUser, setUser } = useAuthentication();
 
   useEffect(() => {
     if (!decryptCookie('sessionId')) {
-      syncUser(setAuth, setUser);
+      syncUser();
     } else {
       setUser(decryptCookie('sessionId'))
     }
-  }, [setAuth, setUser]);
+  }, []);
 
   return (
     <div className='wrapper'>

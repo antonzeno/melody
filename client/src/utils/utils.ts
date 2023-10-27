@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const checkCookie = (cookieName: string) => {
     const cookies = document.cookie.split(';');
@@ -36,27 +37,3 @@ export const encryptCookie = (name: string, data: string | Map<string, string>):
 export const deleteCookie = (name: string): void => {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
-
-export const syncUser = async (setAuth, setUser) => {
-    try {
-        axios.interceptors.request.use(
-            (config) => {
-                config.withCredentials = true;
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
-
-        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
-
-        if (response.status === 200) {
-            setAuth(true);
-            setUser(response.data.user);
-            encryptCookie('sessionId', response.data.user);
-        }
-    } catch (error) {
-        deleteCookie('sessionId');
-    }
-};
