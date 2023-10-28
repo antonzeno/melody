@@ -8,12 +8,11 @@ const AudioPlayer = withCustomAudio(props => {
 
   return (
     <div className='d-flex'>
-      <PlayButton {...props} />
+      <PlayButton {...props} className="custom-player-btn" />
       <div className='d-flex justify-content-between w-100'>
         <Link to={`/soundtrack/${trackId}`} >{trackTitle}</Link>
         <Timer {...props} />
       </div>
-
     </div>
   );
 });

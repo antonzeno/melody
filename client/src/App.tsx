@@ -7,12 +7,12 @@ import Footer from './components/Footer/Footer'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
 import Navigation from './components/Navigation/Navigation'
-import { decryptCookie } from './utils/utils'
 import GuardedRoute from './components/CustomRoutes/GuardedRoute'
 import AuthGuardedRoute from './components/CustomRoutes/AuthGuardedRoute'
 import EditProfile from './pages/EditProfile/EditProfile'
 import Artists from './pages/Artists/Artists'
 import Artist from './pages/Artist/Artist'
+import Checkout from './pages/Checkout/Checkout'
 import EditSoundtrack from './pages/EditSoundtrack/EditSoundtrack'
 import { useAuthentication } from './hooks/useAuthentication'
 
@@ -36,6 +36,7 @@ function App() {
           <Route path='/artists' element={<Artists />} />
           <Route path='/artists/:id' element={<Artist />} />
           <Route path='/soundtrack/edit/:id?' element={<AuthGuardedRoute element={EditSoundtrack} />} />
+          <Route path='/checkout' element={<AuthGuardedRoute element={Checkout} />} />
         </Routes>
       </div>
       <Footer />

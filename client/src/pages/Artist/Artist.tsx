@@ -66,33 +66,31 @@ const Artist = () => {
     }
 
     return (
-        <div className='container bg-dark shadow shadow-md w-100 p-3'>
+        <div className='container bg-dark shadow shadow-md w-50 p-3'>
             <div className="row">
-                <div className="col-5">
-                    <h1>{artist.name}</h1>
-                    <h6>Soundtracks:</h6>
+                <div className="position-relative">
+                    <img src={artist.photo} alt={artist.name} className='w-100' />
 
+                    <h1 className='h2'>{artist.name}</h1>
                     {soundtracks.length > 0 ?
                         <ul>
                             {soundtracks.map(track => {
                                 return (
-                                    <li key={track.id} className='list-style-none'>
+                                    <li key={track.id} className='soundtrack-item'>
                                         <AudioPlayer trackId={track.id} streamUrl={track.url} trackTitle={track.title} preloadType="audio" />
                                     </li>
                                 );
                             })}
                         </ul>
                         : <p>No soundtracks found.</p>}
-                </div>
-                <div className="col-5">
-                    <img src={artist.photo} alt={artist.name} className='w-100' />
-                </div>
-                <div className="col-2">
-                    <div>Payment info:</div>
-                    <button className='btn btn-success'>Buy playlist</button>
+
+                    <div className="position-absolute" style={{ top: ".5rem", right: "1rem" }}>
+                        <Link state={{ artist }} to={'/checkout'}
+                            className='btn btn-success'>Buy playlist</Link>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
