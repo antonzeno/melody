@@ -17,11 +17,7 @@ import EditSoundtrack from "./pages/EditSoundtrack/EditSoundtrack";
 import { useAuthentication } from "./hooks/useAuthentication";
 
 function App() {
-    const { syncUser } = useAuthentication();
-
-    useEffect(() => {
-        syncUser();
-    }, []);
+    const { isAuthenticated } = useAuthentication();
 
     return (
         <div className="wrapper">

@@ -5,13 +5,13 @@ import { authState } from "../../atoms/auth";
 
 const GuardedRoute = ({ element: Element, ...rest }) => {
     const navigate = useNavigate();
-    const auth = useRecoilValue(authState);
+    const { isAuthenticated } = useRecoilValue(authState);
 
     useEffect(() => {
-        auth === true && navigate(-1);
+        isAuthenticated === true && navigate(-1);
     });
 
-    return auth === true ? <></> : <Element {...rest} />;
+    return isAuthenticated === true ? <></> : <Element {...rest} />;
 };
 
 export default GuardedRoute;

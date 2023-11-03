@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ImageUploading from "react-images-uploading";
 import { uploadToS3 } from "../../services/s3Service";
-import { encryptCookie } from "../../utils/utils";
 import { useRecoilState } from "recoil";
-import { userState } from "../../atoms/auth";
+import { authState } from "../../atoms/auth";
 
 const EditProfile = () => {
     const [submitting, setSubmitting] = useState(false);
-    const [user, setUser] = useRecoilState(userState);
+    const [{ user }, setUser] = useRecoilState(authState);
     const [images, setImages] = useState([]);
     const maxNumber = 1;
 
@@ -31,22 +30,19 @@ const EditProfile = () => {
                     },
                     (error) => {
                         return Promise.reject(error);
-                    },
+                    }
                 );
 
-                const response = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/user/checkAuth`,
-                );
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
 
                 if (response.status === 200) {
                     const userData = response.data.user;
-                    console.log(userData);
                     setFormData({
                         name: userData.name ?? "",
                         email: userData.email ?? "",
                     });
                     setUser(userData);
-                    encryptCookie("sessionId", userData);
+                    // encryptCookie("__uid", userData);
                 }
             } catch (error) {
                 console.error(error);
@@ -77,36 +73,28 @@ const EditProfile = () => {
                 },
                 (error) => {
                     return Promise.reject(error);
-                },
+                }
             );
 
             let imageUrl =
                 images.length > 0
-                    ? await uploadToS3(
-                          images[0].file,
-                          "melody-profilephotos",
-                          `photos/${user.id}`,
-                      )
+                    ? await uploadToS3(images[0].file, "melody-profilephotos", `photos/${user.id}`)
                     : user.photo;
 
-            const apiResponse = await axios.put(
-                `${process.env.REACT_APP_SERVER_URL}/user/update`,
-                {
-                    userData: {
-                        id: user.id,
-                        name: formData.name,
-                        email: formData.email,
-                        photo: imageUrl,
-                    },
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+            const apiResponse = await axios.put(`${process.env.REACT_APP_SERVER_URL}/user/update`, {
+                userData: {
+                    id: user.id,
+                    name: formData.name,
+                    email: formData.email,
+                    photo: imageUrl,
                 },
-            );
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
             if (apiResponse.status === 200) {
                 setUser(apiResponse.data);
-                encryptCookie("sessionId", apiResponse.data);
             } else {
                 console.error("Error updating user:", apiResponse.statusText);
             }
@@ -118,13 +106,7 @@ const EditProfile = () => {
     return (
         <div className="app-form">
             <div className="d-flex flex-column justify-content-center align-items-center">
-                <img
-                    src="/logo.png"
-                    width="50"
-                    height="50"
-                    className="d-inline-block align-top"
-                    alt="Logo"
-                />{" "}
+                <img src="/logo.png" width="50" height="50" className="d-inline-block align-top" alt="Logo" />{" "}
                 <div>Edit profile</div>
             </div>
 
@@ -157,69 +139,37 @@ const EditProfile = () => {
                         maxNumber={maxNumber}
                         dataURLKey="data_url"
                     >
-                        {({
-                            imageList,
-                            onImageUpload,
-                            onImageUpdate,
-                            onImageRemove,
-                            isDragging,
-                            dragProps,
-                        }) => (
+                        {({ imageList, onImageUpload, onImageUpdate, onImageRemove, isDragging, dragProps }) => (
                             <div className="upload__image-wrapper">
                                 <button
                                     className="btn btn-dark mb-2"
-                                    style={
-                                        isDragging
-                                            ? { color: "red" }
-                                            : undefined
-                                    }
+                                    style={isDragging ? { color: "red" } : undefined}
                                     onClick={onImageUpload}
                                     {...dragProps}
                                 >
                                     Click or Drop here
                                 </button>
                                 &nbsp;
-                                {imageList.length === 0 &&
-                                    user.photo !== "" && (
-                                        <div className="image-item">
-                                            <img
-                                                src={user.photo}
-                                                alt=""
-                                                width="100"
-                                            />
-                                            <div className="image-item__btn-wrapper mt-2">
-                                                <button
-                                                    className="btn btn-warning ms-2"
-                                                    onClick={() =>
-                                                        removeImage()
-                                                    }
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
+                                {imageList.length === 0 && user.photo !== "" && (
+                                    <div className="image-item">
+                                        <img src={user.photo} alt="" width="100" />
+                                        <div className="image-item__btn-wrapper mt-2">
+                                            <button className="btn btn-warning ms-2" onClick={() => removeImage()}>
+                                                Remove
+                                            </button>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
                                 {imageList.map((image, index) => (
                                     <div key={index} className="image-item">
-                                        <img
-                                            src={image["data_url"]}
-                                            alt=""
-                                            width="100"
-                                        />
+                                        <img src={image["data_url"]} alt="" width="100" />
                                         <div className="image-item__btn-wrapper mt-2">
-                                            <button
-                                                className="btn btn-dark"
-                                                onClick={() =>
-                                                    onImageUpdate(index)
-                                                }
-                                            >
+                                            <button className="btn btn-dark" onClick={() => onImageUpdate(index)}>
                                                 Update
                                             </button>
                                             <button
                                                 className="btn btn-warning ms-2"
-                                                onClick={() =>
-                                                    onImageRemove(index)
-                                                }
+                                                onClick={() => onImageRemove(index)}
                                             >
                                                 Remove
                                             </button>
@@ -231,11 +181,7 @@ const EditProfile = () => {
                     </ImageUploading>
                 </div>
                 <div className="form-button">
-                    <button
-                        className="btn btn-primary"
-                        type="submit"
-                        disabled={submitting}
-                    >
+                    <button className="btn btn-primary" type="submit" disabled={submitting}>
                         {submitting ? "Please wait" : "Save changes"}
                     </button>
                 </div>

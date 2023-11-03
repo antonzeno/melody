@@ -48,7 +48,7 @@ export const login = async (userData: {
 }): Promise<boolean> => {
     const verified = await verifyPassword(
         userData.password,
-        userData.hashedPassword,
+        userData.hashedPassword
     );
 
     return verified;

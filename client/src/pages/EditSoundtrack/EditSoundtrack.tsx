@@ -4,12 +4,12 @@ import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import { useRecoilValue } from "recoil";
 
-import { userState } from "../../atoms/auth";
+import { authState } from "../../atoms/auth";
 import { uploadToS3 } from "../../services/s3Service";
 
 const EditSoundtrack = () => {
     const { id } = useParams();
-    const user = useRecoilValue(userState);
+    const { user } = useRecoilValue(authState);
     const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({ title: "", url: "" });
     const [soundtrack, setSoundtrack] = useState(null);
@@ -20,7 +20,7 @@ const EditSoundtrack = () => {
             (async () => {
                 try {
                     const response = await axios.get(
-                        `${process.env.REACT_APP_SERVER_URL}/soundtrack/${id}`,
+                        `${process.env.REACT_APP_SERVER_URL}/soundtrack/${id}`
                     );
 
                     if (response.status === 200) {
@@ -55,13 +55,13 @@ const EditSoundtrack = () => {
                 },
                 (error) => {
                     return Promise.reject(error);
-                },
+                }
             );
 
             let soundtrackUrl = await uploadToS3(
                 soundtrack,
                 "melody-soundtracks",
-                `soundtrack/${user.id}`,
+                `soundtrack/${user.id}`
             );
             const data: { title: string; url: string; userId: any; id?: any } =
                 {
@@ -80,7 +80,7 @@ const EditSoundtrack = () => {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                    },
+                    }
                 );
             } else {
                 response = await axios.post(
@@ -90,7 +90,7 @@ const EditSoundtrack = () => {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                    },
+                    }
                 );
             }
 
