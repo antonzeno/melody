@@ -1,7 +1,6 @@
-import { atom } from 'recoil';
+import { atom } from "recoil";
 
 export const cachedArtists = atom({
-    key: 'cachedArtists',
+    key: "cachedArtists",
     default: [],
 });
-

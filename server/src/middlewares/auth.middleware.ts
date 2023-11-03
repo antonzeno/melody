@@ -1,5 +1,5 @@
-import express from 'express';
-import jwt from 'jsonwebtoken';
+import express from "express";
+import jwt from "jsonwebtoken";
 
 declare global {
     namespace Express {
@@ -8,15 +8,19 @@ declare global {
         }
     }
 }
-export const checkAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const checkAuth = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+) => {
     const token = req.cookies.jwt;
     if (!token) {
         return res.sendStatus(401);
     }
 
-    jwt.verify(token, 'secretKey', (err: any, decodedToken: any) => {
+    jwt.verify(token, "secretKey", (err: any, decodedToken: any) => {
         if (err) {
-            return res.status(401).json('Unauthorized');
+            return res.status(401).json("Unauthorized");
         }
         req.user = decodedToken;
         next();

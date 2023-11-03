@@ -1,6 +1,6 @@
-import { Soundtrack } from '@prisma/client'
-import prisma from '../../prisma/client'
-import lodash from 'lodash';
+import { Soundtrack } from "@prisma/client";
+import prisma from "../../prisma/client";
+import lodash from "lodash";
 
 export const listSoundtracks = async (): Promise<Soundtrack[]> => {
     return prisma.soundtrack.findMany({
@@ -11,12 +11,16 @@ export const listSoundtracks = async (): Promise<Soundtrack[]> => {
             datePublished: true,
             updatedAt: true,
             user: true,
-            userId: true
-        }
-    })
-}
+            userId: true,
+        },
+    });
+};
 
-export const uploadSoundtrack = async (data: { title: string, url: string, userId: number }): Promise<Soundtrack> => {
+export const uploadSoundtrack = async (data: {
+    title: string;
+    url: string;
+    userId: number;
+}): Promise<Soundtrack> => {
     return prisma.soundtrack.create({
         data: {
             title: data.title,
@@ -31,23 +35,25 @@ export const uploadSoundtrack = async (data: { title: string, url: string, userI
             datePublished: true,
             updatedAt: true,
             user: false,
-            userId: true
-        }
-    })
-}
+            userId: true,
+        },
+    });
+};
 
 export const getSoundtrackById = async (id: number): Promise<Soundtrack> => {
     return prisma.soundtrack.findUnique({
         where: {
             id: id,
-        }
-    })
-}
+        },
+    });
+};
 
-export const getSoundtracksByUserId = async (userId: number): Promise<Soundtrack[]> => {
+export const getSoundtracksByUserId = async (
+    userId: number,
+): Promise<Soundtrack[]> => {
     return prisma.soundtrack.findMany({
         where: {
-            userId
+            userId,
         },
         select: {
             id: true,
@@ -56,7 +62,7 @@ export const getSoundtracksByUserId = async (userId: number): Promise<Soundtrack
             datePublished: true,
             updatedAt: true,
             user: false,
-            userId: true
-        }
-    })
-}
+            userId: true,
+        },
+    });
+};

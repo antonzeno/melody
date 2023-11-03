@@ -1,8 +1,8 @@
-import axios from 'axios';
-import { decryptCookie, deleteCookie, encryptCookie } from '../utils/utils';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { authState, userState } from '../atoms/auth';
+import axios from "axios";
+import { decryptCookie, deleteCookie, encryptCookie } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { authState, userState } from "../atoms/auth";
 
 export const useAuthentication = () => {
     const [auth, setAuth] = useRecoilState(authState);
@@ -10,8 +10,7 @@ export const useAuthentication = () => {
     const navigate = useNavigate();
 
     const syncUser = async () => {
-
-        if (!decryptCookie('sessionId')) {
+        if (!decryptCookie("sessionId")) {
             try {
                 axios.interceptors.request.use(
                     (config) => {
@@ -20,24 +19,26 @@ export const useAuthentication = () => {
                     },
                     (error) => {
                         return Promise.reject(error);
-                    }
+                    },
                 );
 
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/checkAuth`);
+                const response = await axios.get(
+                    `${process.env.REACT_APP_SERVER_URL}/user/checkAuth`,
+                );
 
                 if (response.status === 200) {
                     setAuth(true);
                     setUser(response.data.user);
-                    encryptCookie('sessionId', response.data.user);
+                    encryptCookie("sessionId", response.data.user);
                 } else {
-                    deleteCookie('sessionId');
-                    navigate('/login');
+                    deleteCookie("sessionId");
+                    navigate("/login");
                 }
             } catch (error) {
-                deleteCookie('sessionId');
+                deleteCookie("sessionId");
             }
         } else {
-            setUser(decryptCookie('sessionId'))
+            setUser(decryptCookie("sessionId"));
         }
     };
 

@@ -1,6 +1,6 @@
-import { User } from '@prisma/client'
-import prisma from '../../prisma/client'
-import { generateSaltedHash, verifyPassword } from '../utils/utils'
+import { User } from "@prisma/client";
+import prisma from "../../prisma/client";
+import { generateSaltedHash, verifyPassword } from "../utils/utils";
 
 export const listUsers = async (): Promise<User[]> => {
     return prisma.user.findMany({
@@ -12,11 +12,15 @@ export const listUsers = async (): Promise<User[]> => {
             registeredAt: true,
             updatedAt: true,
             photo: true,
-        }
-    })
-}
+        },
+    });
+};
 
-export const register = async (userData: { name: string, email: string, password: string }): Promise<User> => {
+export const register = async (userData: {
+    name: string;
+    email: string;
+    password: string;
+}): Promise<User> => {
     const hash = await generateSaltedHash(userData.password);
 
     return prisma.user.create({
@@ -24,7 +28,6 @@ export const register = async (userData: { name: string, email: string, password
             name: userData.name,
             email: userData.email,
             password: hash,
-
         },
         select: {
             id: true,
@@ -34,33 +37,46 @@ export const register = async (userData: { name: string, email: string, password
             registeredAt: true,
             updatedAt: true,
             photo: true,
-        }
-    })
-}
+        },
+    });
+};
 
-export const login = async (userData: { email: string, password: string, hashedPassword: string }): Promise<boolean> => {
-    const verified = await verifyPassword(userData.password, userData.hashedPassword)
+export const login = async (userData: {
+    email: string;
+    password: string;
+    hashedPassword: string;
+}): Promise<boolean> => {
+    const verified = await verifyPassword(
+        userData.password,
+        userData.hashedPassword,
+    );
 
     return verified;
-}
+};
 
 export const getUserByEmail = async (email: string): Promise<User> => {
     return prisma.user.findUnique({
         where: {
             email: email,
-        }
-    })
-}
+        },
+    });
+};
 
 export const getUserById = async (id: number): Promise<User> => {
     return prisma.user.findUnique({
         where: {
             id: id,
-        }
-    })
-}
+        },
+    });
+};
 
-export const updateUser = async (userData: { id: number, name: string, email: string, password?: string, photo: string }): Promise<User> => {
+export const updateUser = async (userData: {
+    id: number;
+    name: string;
+    email: string;
+    password?: string;
+    photo: string;
+}): Promise<User> => {
     return prisma.user.update({
         where: {
             id: userData.id,
@@ -70,5 +86,5 @@ export const updateUser = async (userData: { id: number, name: string, email: st
             email: userData.email,
             photo: userData.photo,
         },
-    })
-}
+    });
+};
