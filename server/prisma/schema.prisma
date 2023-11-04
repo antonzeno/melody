@@ -19,6 +19,8 @@ model User {
   updatedAt    DateTime     @updatedAt
   photo        String       @default("")
   Soundtrack   Soundtrack[]
+  orders       Order[]      @relation("orderUser")
+  artistOf     Order[]      @relation("orderArtist")
 
   @@map("users")
 }
@@ -33,4 +35,16 @@ model Soundtrack {
   userId        Int
 
   @@map("soundtracks")
+}
+
+model Order {
+  id       Int      @id @default(autoincrement())
+  amount   Int
+  date     DateTime
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, name: "orderUser")
+  artist   User     @relation(fields: [artistId], references: [id], onDelete: Cascade, name: "orderArtist")
+  userId   Int
+  artistId Int
+
+  @@map("orders")
 }
