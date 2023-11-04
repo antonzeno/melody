@@ -100,7 +100,19 @@ export const getUserById = async (request: express.Request, response: express.Re
     try {
         const { id } = request.params;
 
-        const user = await UserService.getUserById(parseInt(id));
+        const token = request.cookies.jwt;
+        let userId = 0;
+
+        if (token) {
+            jwt.verify(token, "secretKey", (err: any, decodedToken: any) => {
+                if (!err) {
+                    userId = decodedToken.id;
+                }
+            });
+        }
+
+        const user = await UserService.getUserById(parseInt(id), userId);
+
         return response.status(200).json(user);
     } catch (error) {
         return response.status(500).json({ error: "Internal Server Error" });

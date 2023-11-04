@@ -4,12 +4,15 @@ import { Link, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { cachedArtists } from "../../atoms/artists";
 import ReactPlayer from "react-player";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaLock } from "react-icons/fa";
 
 interface ArtistData {
     id: number;
     name: string;
     email: string;
     photo: string;
+    orders: number;
 }
 
 interface Soundtrack {
@@ -34,6 +37,16 @@ const Artist = () => {
 
     const fetchData = async () => {
         try {
+            axios.interceptors.request.use(
+                (config) => {
+                    config.withCredentials = true;
+                    return config;
+                },
+                (error) => {
+                    return Promise.reject(error);
+                }
+            );
+
             const [artistResponse, soundtracksResponse] = await Promise.all([
                 axios.get(`${process.env.REACT_APP_SERVER_URL}/user/${id}`),
                 axios.get(`${process.env.REACT_APP_SERVER_URL}/soundtracks/user/${id}`),
@@ -65,32 +78,23 @@ const Artist = () => {
     }
 
     return (
-        <div className="container bg-dark shadow shadow-md col-10 col-md-6 p-3">
-            <div className="row">
-                <div className="position-relative">
-                    <img src={artist.photo} alt={artist.name} className="w-100" />
-
-                    <h1 className="h2">{artist.name}</h1>
-                    {soundtracks.length > 0 ? (
-                        <ul className="list-unstyled">
-                            {soundtracks.map((track) => {
-                                return (
-                                    <li key={track.id} className="soundtrack-item my-1 w-100">
-                                        <ReactPlayer url={track.url} controls width={330} height={50} light={false} />
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        <p>No soundtracks found.</p>
-                    )}
-
-                    <div className="position-absolute" style={{ top: ".5rem", right: "1rem" }}>
-                        <Link state={{ artist }} to={"/checkout"} className="btn btn-success">
-                            Buy playlist
+        <div className="d-flex justify-content-center align-items-center mt-5 position-relative">
+            <div
+                className={`artist-profile-img d col-10 col-md-6 ${artist.orders === 0 ? "dark-overlay" : ""}`}
+                style={{ background: `url(${artist.photo ? artist.photo : "/no-img-artist.jpg"})` }}
+            >
+                {artist.orders === 0 && (
+                    <div className="unlock-content d-flex justify-content-center align-items-center flex-column">
+                        <FaLock size={"42"} />
+                        <div className="unlock-text">
+                            <span>Unlock content to access this album</span>
+                        </div>
+                        <Link state={{ artist }} to={"/checkout"} className="btn btn-sm btn-outline-dark text-light">
+                            Buy now
                         </Link>
                     </div>
-                </div>
+                )}
+                {/* <div className="artist-info">{artist.name}</div> */}
             </div>
         </div>
     );

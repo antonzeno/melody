@@ -16,11 +16,7 @@ export const listUsers = async (): Promise<User[]> => {
     });
 };
 
-export const register = async (userData: {
-    name: string;
-    email: string;
-    password: string;
-}): Promise<User> => {
+export const register = async (userData: { name: string; email: string; password: string }): Promise<User> => {
     const hash = await generateSaltedHash(userData.password);
 
     return prisma.user.create({
@@ -46,10 +42,7 @@ export const login = async (userData: {
     password: string;
     hashedPassword: string;
 }): Promise<boolean> => {
-    const verified = await verifyPassword(
-        userData.password,
-        userData.hashedPassword
-    );
+    const verified = await verifyPassword(userData.password, userData.hashedPassword);
 
     return verified;
 };
@@ -62,12 +55,24 @@ export const getUserByEmail = async (email: string): Promise<User> => {
     });
 };
 
-export const getUserById = async (id: number): Promise<User> => {
-    return prisma.user.findUnique({
+export const getUserById = async (id: number, userId?: number) => {
+    let user = await prisma.user.findUnique({
         where: {
             id: id,
         },
     });
+
+    let orderCount = 0;
+    if (user) {
+        orderCount = await prisma.order.count({
+            where: {
+                artistId: id,
+                userId: userId,
+            },
+        });
+    }
+
+    return { ...user, orders: orderCount };
 };
 
 export const updateUser = async (userData: {
