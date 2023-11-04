@@ -7,18 +7,12 @@ import { authState } from "../../atoms/auth";
 
 const EditProfile = () => {
     const [submitting, setSubmitting] = useState(false);
-    const [{ user }, setUser] = useRecoilState(authState);
+    const [{ user }, setAuth] = useRecoilState(authState);
     const [images, setImages] = useState([]);
-    const maxNumber = 1;
-
     const [formData, setFormData] = useState({
         name: "",
         email: "",
     });
-
-    const handleImageChange = (imageList) => {
-        setImages(imageList);
-    };
 
     useEffect(() => {
         (async () => {
@@ -41,14 +35,20 @@ const EditProfile = () => {
                         name: userData.name ?? "",
                         email: userData.email ?? "",
                     });
-                    setUser(userData);
-                    // encryptCookie("__uid", userData);
+                    setAuth((prevState) => ({
+                        ...prevState,
+                        user: userData,
+                    }));
                 }
             } catch (error) {
                 console.error(error);
             }
         })();
     }, []);
+
+    const handleImageChange = (imageList) => {
+        setImages(imageList);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -59,13 +59,20 @@ const EditProfile = () => {
     };
 
     const removeImage = () => {
-        setUser({ ...user, photo: "" });
+        setAuth((prevState) => ({
+            ...prevState,
+            user: {
+                ...prevState.user,
+                photo: "",
+            },
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            setSubmitting(true);
             axios.interceptors.request.use(
                 (config) => {
                     config.withCredentials = true;
@@ -94,12 +101,17 @@ const EditProfile = () => {
             });
 
             if (apiResponse.status === 200) {
-                setUser(apiResponse.data);
+                setAuth((prevState) => ({
+                    ...prevState,
+                    user: apiResponse.data,
+                }));
             } else {
                 console.error("Error updating user:", apiResponse.statusText);
             }
         } catch (error) {
             console.error("Error updating user:", error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -133,18 +145,16 @@ const EditProfile = () => {
                 </div>
                 <div className="input-group">
                     <label className="input-label">Profile photo:</label>
-                    <ImageUploading
-                        value={images}
-                        onChange={handleImageChange}
-                        maxNumber={maxNumber}
-                        dataURLKey="data_url"
-                    >
+                    <ImageUploading value={images} onChange={handleImageChange} maxNumber={1} dataURLKey="data_url">
                         {({ imageList, onImageUpload, onImageUpdate, onImageRemove, isDragging, dragProps }) => (
                             <div className="upload__image-wrapper">
                                 <button
                                     className="btn btn-dark mb-2"
                                     style={isDragging ? { color: "red" } : undefined}
-                                    onClick={onImageUpload}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onImageUpload();
+                                    }}
                                     {...dragProps}
                                 >
                                     Click or Drop here
@@ -164,7 +174,13 @@ const EditProfile = () => {
                                     <div key={index} className="image-item">
                                         <img src={image["data_url"]} alt="" width="100" />
                                         <div className="image-item__btn-wrapper mt-2">
-                                            <button className="btn btn-dark" onClick={() => onImageUpdate(index)}>
+                                            <button
+                                                className="btn btn-dark"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    onImageUpdate(index);
+                                                }}
+                                            >
                                                 Update
                                             </button>
                                             <button

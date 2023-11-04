@@ -3,12 +3,9 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
-import { authState } from "../../atoms/auth";
 
 const Login = () => {
     const [submitting, setSubmitting] = useState(false);
-    const setAuth = useSetRecoilState(authState);
     const navigate = useNavigate();
 
     const initialValues = {

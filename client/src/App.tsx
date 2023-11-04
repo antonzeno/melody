@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
@@ -17,7 +17,7 @@ import EditSoundtrack from "./pages/EditSoundtrack/EditSoundtrack";
 import { useAuthentication } from "./hooks/useAuthentication";
 
 function App() {
-    const { isAuthenticated } = useAuthentication();
+    useAuthentication();
 
     return (
         <div className="wrapper">
@@ -25,28 +25,13 @@ function App() {
             <div className="content">
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route
-                        path="/profile/edit"
-                        element={<AuthGuardedRoute element={EditProfile} />}
-                    />
-                    <Route
-                        path="/login"
-                        element={<GuardedRoute element={Login} />}
-                    />
-                    <Route
-                        path="/register"
-                        element={<GuardedRoute element={Register} />}
-                    />
+                    <Route path="/profile/edit" element={<AuthGuardedRoute element={EditProfile} />} />
+                    <Route path="/login" element={<GuardedRoute element={Login} />} />
+                    <Route path="/register" element={<GuardedRoute element={Register} />} />
                     <Route path="/artists" element={<Artists />} />
                     <Route path="/artists/:id" element={<Artist />} />
-                    <Route
-                        path="/soundtrack/edit/:id?"
-                        element={<AuthGuardedRoute element={EditSoundtrack} />}
-                    />
-                    <Route
-                        path="/checkout"
-                        element={<AuthGuardedRoute element={Checkout} />}
-                    />
+                    <Route path="/soundtrack/edit/:id?" element={<AuthGuardedRoute element={EditSoundtrack} />} />
+                    <Route path="/checkout" element={<AuthGuardedRoute element={Checkout} />} />
                 </Routes>
             </div>
             <Footer />

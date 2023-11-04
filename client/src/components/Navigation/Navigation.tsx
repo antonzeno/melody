@@ -2,14 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container, Button, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { authState } from "../../atoms/auth";
 import axios from "axios";
 
 const Navigation = () => {
-    const [{ isAuthenticated, user }, setAuth] = useRecoilState(authState);
+    const { isAuthenticated, user } = useRecoilValue(authState);
     const [dropdownShown, setShowDropdown] = useState(false);
+    const [loading, setLoading] = useState(true);
     const dropdownRef = useRef();
+
+    useEffect(() => {
+        if (isAuthenticated !== null) {
+            setLoading(false);
+        }
+    }, [isAuthenticated]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -37,7 +44,7 @@ const Navigation = () => {
                 }
             );
 
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/logout`);
+            await axios.get(`${process.env.REACT_APP_SERVER_URL}/user/logout`);
         } catch (error) {
             console.error(error);
         }
@@ -64,7 +71,14 @@ const Navigation = () => {
                             Artists
                         </Link>
                     </Nav>
-                    {isAuthenticated ? (
+
+                    {loading ? (
+                        <>
+                            <div className="bg-dark me-2" style={{ width: 35, height: 35, borderRadius: 12 }}></div>
+                            <div className="bg-dark me-2" style={{ width: 75, height: 35, borderRadius: 12 }}></div>
+                            <div className="bg-dark" style={{ width: 60, height: 35, borderRadius: 12 }}></div>
+                        </>
+                    ) : isAuthenticated ? (
                         <NavDropdown
                             title={
                                 <span onClick={handleDropdownToggle}>

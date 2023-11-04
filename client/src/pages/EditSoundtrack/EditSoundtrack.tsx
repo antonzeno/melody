@@ -19,9 +19,7 @@ const EditSoundtrack = () => {
         if (id) {
             (async () => {
                 try {
-                    const response = await axios.get(
-                        `${process.env.REACT_APP_SERVER_URL}/soundtrack/${id}`
-                    );
+                    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/soundtrack/${id}`);
 
                     if (response.status === 200) {
                         setFormData({
@@ -48,6 +46,8 @@ const EditSoundtrack = () => {
         e.preventDefault();
 
         try {
+            setSubmitting(true);
+
             axios.interceptors.request.use(
                 (config) => {
                     config.withCredentials = true;
@@ -58,40 +58,29 @@ const EditSoundtrack = () => {
                 }
             );
 
-            let soundtrackUrl = await uploadToS3(
-                soundtrack,
-                "melody-soundtracks",
-                `soundtrack/${user.id}`
-            );
-            const data: { title: string; url: string; userId: any; id?: any } =
-                {
-                    title: formData.title,
-                    url: soundtrackUrl,
-                    userId: user.id,
-                };
-            let response;
+            let soundtrackUrl = await uploadToS3(soundtrack, "melody-soundtracks", `soundtrack/${user.id}`);
+            const data: { title: string; url: string; userId: any; id?: any } = {
+                title: formData.title,
+                url: soundtrackUrl,
+                userId: user.id,
+            };
 
+            let response;
             if (id) {
                 data.id = id;
-                response = await axios.put(
-                    `${process.env.REACT_APP_SERVER_URL}/soundtrack/upload/${id}`,
-                    {
-                        data,
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/soundtrack/upload/${id}`, {
+                    data,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
             } else {
-                response = await axios.post(
-                    `${process.env.REACT_APP_SERVER_URL}/soundtrack/upload`,
-                    {
-                        data,
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/soundtrack/upload`, {
+                    data,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
             }
 
             if (response.status === 200) {
@@ -103,6 +92,8 @@ const EditSoundtrack = () => {
             }
         } catch (error) {
             console.error("Error uploading:", error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -131,13 +122,7 @@ const EditSoundtrack = () => {
     return (
         <div className="app-form">
             <div className="d-flex flex-column justify-content-center align-items-center">
-                <img
-                    src="/logo.png"
-                    width="50"
-                    height="50"
-                    className="d-inline-block align-top"
-                    alt="Logo"
-                />{" "}
+                <img src="/logo.png" width="50" height="50" className="d-inline-block align-top" alt="Logo" />
                 <div>{id ? "Edit soundtrack" : "Upload soundtrack"}</div>
             </div>
 
@@ -169,19 +154,11 @@ const EditSoundtrack = () => {
                     >
                         <input {...getInputProps()} />
                         <p>Drag & drop a file here, or click to select one</p>
-                        <ul>
-                            {acceptedFileItems.length > 0
-                                ? acceptedFileItems
-                                : formData.url}
-                        </ul>
+                        <ul>{acceptedFileItems.length > 0 ? acceptedFileItems : formData.url}</ul>
                     </div>
                 </div>
                 <div className="form-button">
-                    <button
-                        className="btn btn-primary"
-                        type="submit"
-                        disabled={submitting}
-                    >
+                    <button className="btn btn-primary" type="submit" disabled={submitting}>
                         {submitting ? "Please wait" : "Save changes"}
                     </button>
                 </div>

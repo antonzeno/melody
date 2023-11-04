@@ -29,7 +29,7 @@ const Checkout = () => {
                             "Content-Type": "application/x-www-form-urlencoded",
                             Authorization: `Bearer ${process.env.REACT_APP_STRIPE_SECRET}`,
                         },
-                    },
+                    }
                 )
                 .then((response) => {
                     setState((prevState) => ({
@@ -40,10 +40,8 @@ const Checkout = () => {
                 .catch((error) => {
                     console.error("Error creating payment intent:", error);
                 })
-                .finally(() =>
-                    setState((prevState) => ({ ...prevState, loading: false })),
-                );
-    }, []);
+                .finally(() => setState((prevState) => ({ ...prevState, loading: false })));
+    });
 
     const options = { clientSecret: state.clientSecret };
 

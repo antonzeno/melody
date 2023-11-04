@@ -10,10 +10,8 @@ const Artists = () => {
     useEffect(() => {
         (async () => {
             try {
-                const response = await axios.get(
-                    `${process.env.REACT_APP_SERVER_URL}/users`,
-                );
-                if (response.status == 200) {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/users`);
+                if (response.status === 200) {
                     setUsers(response.data);
                 }
             } catch (error) {
