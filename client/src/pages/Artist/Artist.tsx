@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { cachedArtists } from "../../atoms/artists";
-import AudioPlayer from "../../components/AudioPlayer/AudioPlayer";
+import ReactPlayer from "react-player";
 
 interface ArtistData {
     id: number;
@@ -65,23 +65,18 @@ const Artist = () => {
     }
 
     return (
-        <div className="container bg-dark shadow shadow-md w-50 p-3">
+        <div className="container bg-dark shadow shadow-md col-10 col-md-6 p-3">
             <div className="row">
                 <div className="position-relative">
                     <img src={artist.photo} alt={artist.name} className="w-100" />
 
                     <h1 className="h2">{artist.name}</h1>
                     {soundtracks.length > 0 ? (
-                        <ul>
+                        <ul className="list-unstyled">
                             {soundtracks.map((track) => {
                                 return (
-                                    <li key={track.id} className="soundtrack-item">
-                                        <AudioPlayer
-                                            trackId={track.id}
-                                            streamUrl={track.url}
-                                            trackTitle={track.title}
-                                            preloadType="audio"
-                                        />
+                                    <li key={track.id} className="soundtrack-item my-1 w-100">
+                                        <ReactPlayer url={track.url} controls width={330} height={50} light={false} />
                                     </li>
                                 );
                             })}
