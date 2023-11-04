@@ -1,8 +1,7 @@
 .artist-card {
     display: flex;
     flex-direction: column;
-    border: 1px solid grey;
-    border-radius: 12px;
+    background-repeat: no-repeat;
 }
 
 .artist-card img {

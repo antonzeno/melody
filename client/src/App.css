@@ -16,12 +16,6 @@
     min-height: 50px;
 }
 
-.homepage {
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid rgb(72, 72, 72);
-}
-
 .dropdown-toggle::after {
     display: none !important;
 }

@@ -25,7 +25,7 @@ const Artists = () => {
             <div className="row">
                 {error ??
                     users.map((user) => (
-                        <div key={user.id} className="col-12 col-md-3">
+                        <div key={user.id} className="col-12 col-md-3 my-2">
                             <Link to={`/artists/${user.id}`}>
                                 <ArtistCard artist={user} />
                             </Link>

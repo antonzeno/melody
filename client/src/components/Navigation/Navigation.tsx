@@ -55,7 +55,7 @@ const Navigation = () => {
     }
 
     return (
-        <Navbar variant="dark" expand="lg">
+        <Navbar variant="dark" expand="lg" className="p-0">
             <Container>
                 <Navbar.Brand href="/" className="d-flex align-items-center">
                     <img src="/logo.png" width="50" height="50" className="d-inline-block align-top" alt="Logo" />{" "}
