@@ -2,8 +2,21 @@ import { User } from "@prisma/client";
 import prisma from "../../prisma/client";
 import { generateSaltedHash, verifyPassword } from "../utils/utils";
 
-export const listUsers = async (): Promise<User[]> => {
+export const searchUsers = async (searchParams: { query?: string; orderBy?: string }): Promise<User[]> => {
+    const orderByFields = [];
+    if (searchParams.orderBy) {
+        const [field, direction] = searchParams.orderBy.split("_");
+        const fieldObject = { [field]: direction };
+        orderByFields.push(fieldObject);
+    }
+
     return prisma.user.findMany({
+        where: {
+            name: {
+                contains: searchParams.query ?? "",
+            },
+        },
+        orderBy: orderByFields,
         select: {
             id: true,
             name: true,

@@ -16,35 +16,16 @@ export const login = async (request: express.Request, response: express.Response
             return response.status(403).json("Invalid credentials");
         }
 
-        const token = jwt.sign(
-            {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                photo: user.photo,
-            },
-            "secretKey",
-            { expiresIn: "1h" }
-        );
-
-        response.cookie("jwt", token, {
-            httpOnly: true,
-            secure: true,
-            maxAge: 3600000,
+        const token = jwt.sign({ id: user.id, name: user.name, email: user.email, photo: user.photo }, "secretKey", {
+            expiresIn: "1h",
         });
+
+        response.cookie("jwt", token, { httpOnly: true, secure: true, maxAge: 3600000 });
 
         response.cookie(
             "__uid",
-            JSON.stringify({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                photo: user.photo,
-            }),
-            {
-                secure: true,
-                maxAge: 3600000,
-            }
+            JSON.stringify({ id: user.id, name: user.name, email: user.email, photo: user.photo }),
+            { secure: true, maxAge: 3600000 }
         );
 
         return response.status(200).json({ user });
@@ -119,10 +100,16 @@ export const getUserById = async (request: express.Request, response: express.Re
     }
 };
 
-export const getAllUsers = async (request: express.Request, response: express.Response) => {
-    try {
-        const users = await UserService.listUsers();
+type SearchParams = {
+    query?: string;
+    orderBy?: string;
+};
 
+export const searchUsers = async (request: express.Request, response: express.Response) => {
+    try {
+        const searchParams = request.query as SearchParams;
+
+        const users = await UserService.searchUsers({ ...searchParams });
         return response.status(200).json(users);
     } catch (error) {
         return response.status(500).json({ error: "Internal Server Error" });

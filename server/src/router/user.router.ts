@@ -6,14 +6,14 @@ import {
     logout,
     checkUser,
     updateAuthUser,
-    getAllUsers,
+    searchUsers,
     getUserById,
 } from "../controllers/user.controller";
 
 export default (router: express.Router) => {
     router.post("/user/register", register);
     router.post("/user/login", login);
-    router.get("/users", getAllUsers);
+    router.get("/users", searchUsers);
     router.get("/user/checkAuth", checkUser);
     router.get("/user/logout", logout);
     router.put("/user/update", checkAuth, updateAuthUser);
